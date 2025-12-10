@@ -32,28 +32,32 @@
 
     <div class="hero-content">
       <p class="hero-kicker">Pi Kappa Alpha × Pi Kappa Phi</p>
-      <h1>Run for Hope 5K</h1>
-      <p class="hero-subtitle">
-        Benefitting Active Minds, the student mental health nonprofit
-      </p>
-      <p class="hero-meta">
-        Tuscaloosa, Alabama · February 7, 2026
-      </p>
-      <div class="hero-buttons">
-        <a href="#registration" class="btn primary">Register &amp; Pay – $25</a>
-        <a href="https://support.activeminds.org/fundraiser/6863275"
-           class="btn ghost"
-           target="_blank"
-           rel="noopener">
-          Donate to Active Minds
-        </a>
+
+      <!-- this block is hidden until the user scrolls a little -->
+      <div class="hero-main">
+        <h1>Run for Hope 5K</h1>
+        <p class="hero-subtitle">
+          Benefitting Active Minds, the student mental health nonprofit
+        </p>
+        <p class="hero-meta">
+          Tuscaloosa, Alabama · February 7, 2026
+        </p>
+        <div class="hero-buttons">
+          <a href="#registration" class="btn primary">Register &amp; Pay – $25</a>
+          <a href="https://support.activeminds.org/fundraiser/6863275"
+             class="btn ghost"
+             target="_blank"
+             rel="noopener">
+            Donate to Active Minds
+          </a>
+        </div>
       </div>
     </div>
   </header>
 
   <main>
     <!-- About -->
-    <section id="about" class="section">
+    <section id="about" class="section reveal">
       <div class="container narrow">
         <h2 class="section-title">A Run for Awareness, Hope, and Community</h2>
         <p class="section-lead">
@@ -69,7 +73,7 @@
     </section>
 
     <!-- Registration (Stripe = one step) -->
-    <section id="registration" class="section muted">
+    <section id="registration" class="section muted reveal">
       <div class="container">
         <div class="card grid-2">
           <div>
@@ -120,7 +124,7 @@
     </section>
 
     <!-- Schedule -->
-    <section id="schedule" class="section">
+    <section id="schedule" class="section reveal">
       <div class="container narrow">
         <h2 class="section-title">Event Day Schedule</h2>
         <p class="section-lead">
@@ -149,7 +153,7 @@
     </section>
 
     <!-- Route -->
-    <section id="route" class="section muted">
+    <section id="route" class="section muted reveal">
       <div class="container">
         <div class="card">
           <h2 class="section-title">Race Route</h2>
@@ -175,7 +179,7 @@
     </section>
 
     <!-- Sponsors -->
-    <section id="sponsors" class="section">
+    <section id="sponsors" class="section reveal">
       <div class="container">
         <h2 class="section-title center">Sponsorship Opportunities</h2>
         <p class="section-lead center">
@@ -216,7 +220,7 @@
     </section>
 
     <!-- Active Minds About -->
-    <section id="afsp" class="section">
+    <section id="afsp" class="section reveal">
       <div class="container narrow">
         <div class="center" style="margin-bottom: 12px;">
           <span class="tag-pill">Benefitting Active Minds</span>
@@ -256,7 +260,7 @@
     </section>
 
     <!-- Donation / non-runners -->
-    <section id="afsp-donation" class="section muted">
+    <section id="afsp-donation" class="section muted reveal">
       <div class="container narrow">
         <h2 class="section-title center">Make a Tax-Deductible Gift</h2>
 
@@ -290,7 +294,7 @@
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="section">
+    <section id="faq" class="section reveal">
       <div class="container narrow">
         <h2 class="section-title">FAQ</h2>
         <div class="faq-list">
@@ -331,7 +335,7 @@
     </section>
 
     <!-- Contact -->
-    <section id="contact" class="section muted">
+    <section id="contact" class="section muted reveal">
       <div class="container narrow center">
         <h2 class="section-title">Contact</h2>
         <p class="section-lead">
@@ -357,6 +361,56 @@
   <script>
     // keep footer year current
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Scroll reveal for sections
+    const revealSections = document.querySelectorAll('.section.reveal');
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.18 }
+      );
+
+      revealSections.forEach((sec) => observer.observe(sec));
+    } else {
+      revealSections.forEach((sec) => sec.classList.add('in-view'));
+    }
+
+    const body = document.body;
+    const doc = document.documentElement;
+    const crests = document.querySelectorAll('.crest');
+    let heroTitleShown = false;
+
+    window.addEventListener('scroll', () => {
+      const maxScroll = (doc.scrollHeight - window.innerHeight) || 1;
+      const ratio = window.scrollY / maxScroll;
+
+      // prism background movement
+      const pos = 20 + ratio * 40; // 20% -> 60%
+      body.style.backgroundPosition = `50% ${pos}%`;
+
+      // crest scaling: larger at top, slightly smaller as you scroll
+      const crestMax = 220; // px of scroll for full effect
+      const y = Math.min(window.scrollY, crestMax);
+      const scale = 1.08 - (y / crestMax) * 0.25; // 1.08 -> ~0.83
+
+      crests.forEach(c => {
+        c.style.transform = `scale(${scale})`;
+      });
+
+      // reveal the hero main block only after the user has scrolled a bit
+      if (!heroTitleShown && window.scrollY > 12) {
+        body.classList.add('hero-title-visible');
+        heroTitleShown = true;
+      }
+    });
   </script>
 </body>
 </html>
