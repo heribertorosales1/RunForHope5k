@@ -16,8 +16,8 @@
   --radius-lg: 22px;
   --radius-md: 14px;
   --max-width: 960px;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-    sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
 }
 
 *,
@@ -34,30 +34,26 @@ body {
   color: var(--text-main);
 }
 
-/* Continuous “prism” background that we move in JS */
-body {
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0, 178, 139, 0.26), transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(88, 86, 214, 0.22), transparent 55%),
-    radial-gradient(circle at 100% 0%, rgba(255, 149, 0, 0.18), transparent 55%),
-    linear-gradient(135deg, #fdfdfd, #f4f6ff 40%, #f5fbf7 72%, #ffffff);
-  background-attachment: fixed;
-  background-size: 220% 220%;
-  background-position: 50% 20%;
-  transition: background-position 0.35s ease-out;
-}
-
 html {
   scroll-behavior: smooth;
 }
 
-.section {
-  padding: 64px 16px;
+/* Subtle prism background */
+body {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(0, 178, 139, 0.12), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(88, 86, 214, 0.10), transparent 55%),
+    radial-gradient(circle at 100% 0%, rgba(255, 149, 0, 0.08), transparent 55%),
+    linear-gradient(135deg, #fdfefe, #f7fafc 40%, #f8fbf8 75%, #ffffff);
+  background-attachment: fixed;
+  background-size: 180% 180%;
+  background-position: 50% 18%;
+  transition: background-position 0.35s ease-out;
 }
 
-/* No more section-colored stripes */
-.section.muted {
-  background-color: transparent;
+/* Layout helpers */
+.section {
+  padding: 64px 16px;
 }
 
 .container {
@@ -70,7 +66,7 @@ html {
   margin: 0 auto;
 }
 
-/* “Glass surface” for narrow sections */
+/* Glass surface for narrow sections */
 .section:not(.hero) > .container.narrow {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -85,18 +81,14 @@ html {
 }
 
 /* HERO */
-
 .hero {
   background: transparent;
-  padding: 24px 16px 60px 16px;
-  min-height: 78vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  padding: 24px 16px 80px 16px;
+  min-height: 100vh; /* ensures next section is off-screen initially */
+  display: block;
 }
 
-/* nav */
-
+/* NAV */
 .nav {
   max-width: var(--max-width);
   margin: 0 auto 32px auto;
@@ -128,35 +120,46 @@ html {
   opacity: 1;
 }
 
-/* Crests */
-
+/* HERO LOGOS */
 .hero-logos {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
+  margin-top: clamp(40px, 14vh, 80px); /* pushes crests lower */
   margin-bottom: 20px;
 }
 
+/* Crests fade in and shrink slightly on scroll */
 .crest {
   height: 110px;
   width: auto;
   object-fit: contain;
   user-select: none;
   filter: drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.14));
-  transition: transform 0.25s ease, filter 0.18s ease;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out,
+    filter 0.18s ease;
 }
 
-.crest:hover {
-  filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.2));
+body.hero-mounted .crest {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* Hero text */
+body.hero-mounted.scrolled-hero .crest {
+  transform: translateY(0) scale(0.78);
+}
 
+/* HERO TEXT */
 .hero-content {
   max-width: 640px;
-  margin: 40px auto 0 auto;
+  margin: 0 auto;
   text-align: center;
+  padding-top: 8px;
 }
 
 .hero-kicker {
@@ -167,14 +170,14 @@ html {
   margin-bottom: 8px;
 }
 
-/* hide until scroll */
+/* hidden until hero-mounted */
 .hero-main {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-body.hero-title-visible .hero-main {
+body.hero-mounted .hero-main {
   opacity: 1;
   transform: translateY(0);
 }
@@ -203,15 +206,10 @@ body.hero-title-visible .hero-main {
   gap: 12px;
 }
 
-/* Typography */
-
+/* TYPOGRAPHY */
 .section-title {
   font-size: 1.75rem;
   margin: 0 0 12px 0;
-}
-
-.section-title.center {
-  text-align: center;
 }
 
 .section-lead {
@@ -220,8 +218,7 @@ body.hero-title-visible .hero-main {
   margin: 0 0 16px 0;
 }
 
-/* Buttons */
-
+/* BUTTONS */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -264,10 +261,10 @@ body.hero-title-visible .hero-main {
 
 .btn.full {
   width: 100%;
+  justify-content: center;
 }
 
-/* Cards & grids */
-
+/* CARDS & GRIDS */
 .card {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -275,8 +272,8 @@ body.hero-title-visible .hero-main {
   padding: 24px 24px 28px 24px;
   border: 1px solid var(--border-soft);
   backdrop-filter: blur(18px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
@@ -308,8 +305,7 @@ body.hero-title-visible .hero-main {
   height: 100%;
 }
 
-/* Lists */
-
+/* LISTS */
 .bullets {
   list-style: none;
   padding-left: 0;
@@ -340,8 +336,7 @@ body.hero-title-visible .hero-main {
   font-weight: 600;
 }
 
-/* Timeline */
-
+/* TIMELINE */
 .timeline {
   display: grid;
   gap: 16px;
@@ -356,8 +351,7 @@ body.hero-title-visible .hero-main {
   color: var(--text-muted);
 }
 
-/* Route image */
-
+/* ROUTE IMAGE */
 .route-image-wrapper {
   margin-top: 24px;
   border-radius: var(--radius-md);
@@ -373,15 +367,13 @@ body.hero-title-visible .hero-main {
   display: block;
 }
 
-/* Sponsors */
-
+/* SPONSORS */
 .sponsor-card h3 {
   margin-top: 0;
   margin-bottom: 4px;
 }
 
 /* FAQ */
-
 .faq-list {
   display: grid;
   gap: 16px;
@@ -397,15 +389,13 @@ body.hero-title-visible .hero-main {
   color: var(--text-muted);
 }
 
-/* Small text */
-
+/* SMALL TEXT */
 .small-note {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* Active Minds badge / tag */
-
+/* TAGS / BADGES */
 .afsp-badge {
   display: inline-flex;
   align-items: center;
@@ -438,8 +428,7 @@ body.hero-title-visible .hero-main {
   color: var(--text-muted);
 }
 
-/* Footer */
-
+/* FOOTER */
 .footer {
   padding: 24px 16px;
   border-top: 1px solid rgba(210, 210, 215, 0.6);
@@ -453,7 +442,7 @@ body.hero-title-visible .hero-main {
   color: var(--text-muted);
 }
 
-/* Scroll reveal – base section fade/slide */
+/* SCROLL REVEAL */
 .section.reveal {
   opacity: 0;
   transform: translateY(26px);
@@ -466,7 +455,7 @@ body.hero-title-visible .hero-main {
   transform: translateY(0);
 }
 
-/* Child elements "fall into place" when section enters view */
+/* Children falling into place */
 .section.reveal .card,
 .section.reveal .timeline-item,
 .section.reveal .faq-item,
@@ -474,8 +463,7 @@ body.hero-title-visible .hero-main {
 .section.reveal .afsp-badge,
 .section.reveal .tag-pill,
 .section.reveal .bullets li,
-.section.reveal .price,
-.section.reveal .hero-buttons .btn {
+.section.reveal .price {
   opacity: 0;
   transform: translateY(18px) scale(0.98);
   transition: opacity 0.55s ease-out, transform 0.55s ease-out;
@@ -488,13 +476,12 @@ body.hero-title-visible .hero-main {
 .section.reveal.in-view .afsp-badge,
 .section.reveal.in-view .tag-pill,
 .section.reveal.in-view .bullets li,
-.section.reveal.in-view .price,
-.section.reveal.in-view .hero-buttons .btn {
+.section.reveal.in-view .price {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-/* Simple stagger so items don't animate all at once */
+/* Stagger timing */
 .section.reveal.in-view .card:nth-of-type(1),
 .section.reveal.in-view .timeline-item:nth-of-type(1),
 .section.reveal.in-view .faq-item:nth-of-type(1),
@@ -519,21 +506,7 @@ body.hero-title-visible .hero-main {
   transition-delay: 0.14s;
 }
 
-/* buttons & badges get a tiny delay too */
-.section.reveal.in-view .hero-buttons .btn {
-  transition-delay: 0.12s;
-}
-
-.section.reveal.in-view .afsp-badge {
-  transition-delay: 0.1s;
-}
-
-.section.reveal.in-view .tag-pill {
-  transition-delay: 0.04s;
-}
-
-/* Responsive tweaks */
-
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .section {
     padding: 56px 16px;
@@ -584,7 +557,7 @@ body.hero-title-visible .hero-main {
 
   .hero {
     padding: 20px 16px 52px 16px;
-    min-height: 72vh;
+    min-height: 90vh;
   }
 
   .hero-logos {
@@ -598,6 +571,10 @@ body.hero-title-visible .hero-main {
 
   .hero-content {
     margin-top: 30px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
   }
 }
 
@@ -613,7 +590,7 @@ body.hero-title-visible .hero-main {
 
   .hero {
     padding: 18px 12px 46px 12px;
-    min-height: 70vh;
+    min-height: 88vh;
   }
 
   .hero h1 {
@@ -622,11 +599,6 @@ body.hero-title-visible .hero-main {
 
   .hero-subtitle {
     font-size: 0.95rem;
-  }
-
-  .hero-buttons .btn {
-    width: 100%;
-    justify-content: center;
   }
 
   .card {
@@ -640,4 +612,79 @@ body.hero-title-visible .hero-main {
   .crest {
     height: 80px;
   }
+}
+
+/* FERRARI-STYLE INTRO OVERLAY */
+#welcome-intro {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.45));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  backdrop-filter: blur(12px);
+  transition: opacity 1s ease;
+}
+
+/* Layout of intro content */
+.intro-content {
+  text-align: center;
+  transform: scale(0.92);
+  opacity: 0;
+  transition: opacity 0.9s ease-out,
+    transform 1.1s cubic-bezier(.16,.84,.44,1);
+}
+
+/* When JS adds .loaded, content fades in */
+#welcome-intro.loaded .intro-content {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Crest animations */
+.intro-crest {
+  width: 110px;
+  margin: 0 12px;
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  animation: crestIn 1.1s ease forwards;
+}
+
+.crest-right {
+  animation-delay: 0.25s;
+}
+
+@keyframes crestIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Title reveal */
+.intro-title {
+  font-size: 34px;
+  margin-top: 18px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: titleReveal 1.2s ease forwards;
+  animation-delay: 0.4s;
+}
+
+@keyframes titleReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade overlay out when JS adds .fade-out */
+#welcome-intro.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.1s ease;
 }
