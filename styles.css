@@ -42,30 +42,45 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Holographic / chrome-style background (movement controlled by JS) */
+/* Soft holographic background that matches the palette & stays subtle */
 body {
   background:
-    /* soft pink highlight top-left */
-    radial-gradient(circle at 10% 0%, rgba(255, 170, 214, 0.70), transparent 60%),
-    /* cyan / aqua highlight top-right */
-    radial-gradient(circle at 90% 0%, rgba(144, 220, 255, 0.70), transparent 60%),
-    /* warm glow bottom-left */
-    radial-gradient(circle at 0% 85%, rgba(255, 214, 165, 0.75), transparent 55%),
-    /* purple / blue chrome bottom-right */
-    radial-gradient(circle at 100% 100%, rgba(190, 174, 255, 0.70), transparent 55%),
-    /* subtle chrome sweep through the middle */
-    conic-gradient(
-      from 210deg at 50% 40%,
-      #f9fbff,
-      #f5f1ff,
-      #fdeffd,
-      #f9fbff
-    );
-  background-attachment: fixed;
-  background-size: 230% 230%;  /* big canvas for fluid motion */
-  background-position: 50% 20%;
+    /* soft coral glow (top-left, matches primary button hue) */
+    radial-gradient(circle at 8% 0%,
+      rgba(255, 150, 155, 0.35),
+      transparent 60%
+    ),
+    /* mint/teal glow (top-right, mental health/hope vibe) */
+    radial-gradient(circle at 92% 0%,
+      rgba(160, 225, 210, 0.33),
+      transparent 60%
+    ),
+    /* warm neutral base (bottom-left) */
+    radial-gradient(circle at 0% 100%,
+      rgba(255, 220, 190, 0.32),
+      transparent 60%
+    ),
+    /* soft lavender to keep it modern (bottom-right) */
+    radial-gradient(circle at 100% 100%,
+      rgba(205, 195, 255, 0.30),
+      transparent 60%
+    ),
+    /* very light overall wash so text/cards stay readable */
+    linear-gradient(135deg, #fdfefe, #faf7fb 45%, #f9fbf8 100%);
+  background-attachment: scroll;         /* better performance on phones */
+  background-size: 230% 230%;           /* big canvas so movement feels fluid */
+  background-position: 50% 20%;         /* JS will animate this */
   transition: background-position 0.22s ease-out;
 }
+
+/* Slight tweak for phones: make blobs a bit larger/softer */
+@media (max-width: 768px) {
+  body {
+    background-size: 260% 260%;
+    background-position: 50% 22%;
+  }
+}
+
 
 /* Lock scroll while intro is active */
 body.intro-active {
