@@ -380,7 +380,7 @@
     </div>
   </footer>
 
-  <!-- JS -->
+    <!-- JS -->
   <script>
     // Keep footer year current
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -389,9 +389,9 @@
       const intro = document.getElementById("welcome-intro");
       const body = document.body;
 
-      // ====== LANDO-STYLE BACKGROUND PARALLAX (STRONGER) ======
+      // ====== LANDO-STYLE BACKGROUND PARALLAX ======
       const baseBgX = 50;
-      const baseBgY = 20;
+      const baseBgY = 24;  // slightly lower so hero area has color
 
       let scrollOffsetY = 0;
       let mouseNormX = 0; // -0.5 to 0.5
@@ -403,13 +403,11 @@
       const lerp = (start, end, k) => start + (end - start) * k;
 
       function updateBackground() {
-        t += 0.004; // slow time wobble
+        t += 0.004; // slow wobble
 
-        // how much mouse moves the background (pretty strong so you see it)
-        const mouseShiftX = mouseNormX * 18; // left/right
-        const mouseShiftY = mouseNormY * 12; // up/down
+        const mouseShiftX = mouseNormX * 18;
+        const mouseShiftY = mouseNormY * 12;
 
-        // little auto wobble so it moves even if mouse is still
         const wobbleX = Math.sin(t) * 2;
         const wobbleY = Math.cos(t * 1.35) * 2;
 
@@ -430,6 +428,16 @@
         mouseNormY = e.clientY / window.innerHeight - 0.5;
       });
 
+      // Helper to aggressively force top (for mobile browser quirks)
+      const forceTop = () => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      };
+
+      // Make sure we start at top as soon as possible
+      forceTop();
+
       // ====== INTRO SEQUENCE ======
 
       // Step 1: fade intro content IN
@@ -437,17 +445,21 @@
         intro.classList.add("loaded");
       }, 150);
 
-      // Step 2: fade intro OUT + unlock scroll + hard reset to very top
+      // Step 2: fade intro OUT + unlock scroll + reset to top
       setTimeout(() => {
         intro.classList.add("fade-out");
         body.classList.remove("intro-active");
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        forceTop();
       }, 1850); // ~1.8s Ferrari-style intro
 
       // Step 3: reveal hero underneath
       setTimeout(() => {
         body.classList.add("hero-mounted");
+        forceTop();
       }, 1900);
+
+      // Safety: one more top-reset a bit later for mobile bars resizing
+      setTimeout(forceTop, 2200);
 
       // ====== SCROLL EFFECTS (crest shrink + BG scroll influence) ======
       const onScrollHero = () => {

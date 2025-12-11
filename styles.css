@@ -42,36 +42,45 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Soft holographic background that matches the palette & stays subtle */
+//* Soft holographic background that matches the palette & is visible near the top */
 body {
   background:
-    /* soft coral glow (top-left, matches primary button hue) */
-    radial-gradient(circle at 8% 0%,
-      rgba(255, 150, 155, 0.35),
+    /* soft coral glow, upper-left (ties to primary button) */
+    radial-gradient(circle at 20% 10%,
+      rgba(255, 150, 155, 0.32),
       transparent 60%
     ),
-    /* mint/teal glow (top-right, mental health/hope vibe) */
-    radial-gradient(circle at 92% 0%,
-      rgba(160, 225, 210, 0.33),
+    /* mint/teal glow, upper-right (mental health / hope) */
+    radial-gradient(circle at 80% 12%,
+      rgba(160, 225, 210, 0.30),
       transparent 60%
     ),
-    /* warm neutral base (bottom-left) */
-    radial-gradient(circle at 0% 100%,
-      rgba(255, 220, 190, 0.32),
+    /* warm neutral, lower-left */
+    radial-gradient(circle at 18% 82%,
+      rgba(255, 220, 190, 0.30),
       transparent 60%
     ),
-    /* soft lavender to keep it modern (bottom-right) */
-    radial-gradient(circle at 100% 100%,
-      rgba(205, 195, 255, 0.30),
+    /* soft lavender, lower-right */
+    radial-gradient(circle at 82% 88%,
+      rgba(205, 195, 255, 0.28),
       transparent 60%
     ),
-    /* very light overall wash so text/cards stay readable */
+    /* very light base so content still pops */
     linear-gradient(135deg, #fdfefe, #faf7fb 45%, #f9fbf8 100%);
-  background-attachment: scroll;         /* better performance on phones */
-  background-size: 230% 230%;           /* big canvas so movement feels fluid */
-  background-position: 50% 20%;         /* JS will animate this */
+  background-attachment: scroll;          /* smoother on phones */
+  background-size: 220% 220%;            /* big canvas for fluid movement */
+  background-position: 50% 24%;          /* centered so hero sees the color */
   transition: background-position 0.22s ease-out;
 }
+
+/* On phones: bigger, softer blobs but still visible behind hero */
+@media (max-width: 768px) {
+  body {
+    background-size: 260% 260%;
+    background-position: 50% 26%;
+  }
+}
+
 
 /* Slight tweak for phones: make blobs a bit larger/softer */
 @media (max-width: 768px) {
