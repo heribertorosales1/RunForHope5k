@@ -6,10 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="intro-active">
   <!-- Ferrari-style welcome intro overlay -->
   <div id="welcome-intro">
     <div class="intro-content">
+      <!-- images live in /public -->
       <img src="public/pike.png" alt="Pi Kappa Alpha crest" class="intro-crest crest-left" />
       <img src="public/pikapp.png" alt="Pi Kappa Phi crest" class="intro-crest crest-right" />
       <h1 class="intro-title">Run for Hope 5K</h1>
@@ -49,7 +50,6 @@
         </p>
 
         <div class="hero-buttons">
-          <!-- Stripe checkout link -->
           <a
             href="https://buy.stripe.com/test_4gMbJ3akadsh05DaJseIw00"
             class="btn primary"
@@ -58,11 +58,8 @@
           >
             Register &amp; Pay – $25
           </a>
-          <!-- Scroll to tax-deductible section / or direct link -->
-          <a
-            href="#tax-gift"
-            class="btn ghost"
-          >
+
+          <a href="#tax-gift" class="btn ghost">
             Donate to Active Minds
           </a>
         </div>
@@ -182,7 +179,6 @@
       </p>
 
       <div class="route-image-wrapper">
-        <!-- replace src with your actual map image -->
         <img src="public/route.png" alt="UA Run for Hope 5K race route" class="route-image" />
       </div>
     </div>
@@ -234,8 +230,9 @@
         </div>
 
         <div style="text-align:center; margin-top:20px;">
-          <a href="mailto:runforhope5k@gmail.com?subject=Run%20for%20Hope%205K%20Sponsorship"
-             class="btn primary">
+          <a
+            href="mailto:runforhope5k@gmail.com?subject=Run%20for%20Hope%205K%20Sponsorship"
+            class="btn primary">
             Become a Sponsor
           </a>
         </div>
@@ -390,40 +387,87 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const intro = document.getElementById("welcome-intro");
+      const body = document.body;
+
+      // ====== LANDO-STYLE BACKGROUND PARALLAX (STRONGER) ======
+      const baseBgX = 50;
+      const baseBgY = 20;
+
+      let scrollOffsetY = 0;
+      let mouseNormX = 0; // -0.5 to 0.5
+      let mouseNormY = 0;
+      let currentX = baseBgX;
+      let currentY = baseBgY;
+      let t = 0;
+
+      const lerp = (start, end, k) => start + (end - start) * k;
+
+      function updateBackground() {
+        t += 0.004; // slow time wobble
+
+        // how much mouse moves the background (pretty strong so you see it)
+        const mouseShiftX = mouseNormX * 18; // left/right
+        const mouseShiftY = mouseNormY * 12; // up/down
+
+        // little auto wobble so it moves even if mouse is still
+        const wobbleX = Math.sin(t) * 2;
+        const wobbleY = Math.cos(t * 1.35) * 2;
+
+        const targetX = baseBgX + mouseShiftX + wobbleX;
+        const targetY = baseBgY + scrollOffsetY + mouseShiftY + wobbleY;
+
+        currentX = lerp(currentX, targetX, 0.12);
+        currentY = lerp(currentY, targetY, 0.12);
+
+        body.style.backgroundPosition = `${currentX}% ${currentY}%`;
+
+        requestAnimationFrame(updateBackground);
+      }
+
+      // Mouse-based parallax (desktop / tablet)
+      window.addEventListener("mousemove", (e) => {
+        mouseNormX = e.clientX / window.innerWidth - 0.5;
+        mouseNormY = e.clientY / window.innerHeight - 0.5;
+      });
+
+      // ====== INTRO SEQUENCE ======
 
       // Step 1: fade intro content IN
       setTimeout(() => {
         intro.classList.add("loaded");
       }, 150);
 
-      // Step 2: fade intro OUT
+      // Step 2: fade intro OUT + unlock scroll + hard reset to very top
       setTimeout(() => {
         intro.classList.add("fade-out");
+        body.classList.remove("intro-active");
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       }, 1850); // ~1.8s Ferrari-style intro
 
       // Step 3: reveal hero underneath
       setTimeout(() => {
-        document.body.classList.add("hero-mounted");
+        body.classList.add("hero-mounted");
       }, 1900);
 
-      // Shrink crests slightly once user scrolls a bit
+      // ====== SCROLL EFFECTS (crest shrink + BG scroll influence) ======
       const onScrollHero = () => {
         if (window.scrollY > 40) {
-          document.body.classList.add("scrolled-hero");
+          body.classList.add("scrolled-hero");
         } else {
-          document.body.classList.remove("scrolled-hero");
+          body.classList.remove("scrolled-hero");
         }
 
-        // Subtle background motion with scroll
-        const maxShift = 12; // percent
-        const posY = 18 + Math.min(window.scrollY / 80, maxShift);
-        document.body.style.backgroundPosition = `50% ${posY}%`;
+        const maxShift = 18; // percent
+        scrollOffsetY = Math.min(window.scrollY / 60, maxShift);
       };
 
-      window.addEventListener("scroll", onScrollHero);
+      window.addEventListener("scroll", onScrollHero, { passive: true });
       onScrollHero();
 
-      // Scroll reveal for sections
+      // Kick off the animated background loop
+      updateBackground();
+
+      // ====== SCROLL REVEAL FOR SECTIONS ======
       const revealSections = document.querySelectorAll(".section.reveal");
       const observer = new IntersectionObserver(
         (entries) => {

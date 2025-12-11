@@ -4,7 +4,11 @@
   --text-main: #111111;
   --text-muted: #6e6e73;
 
-  --accent: #00b28b;
+  /* Brighter, attention-grabbing accent (coral) */
+  --accent: #ff5a5f;
+  --accent-soft: #ffe1e3;
+  --accent-dark: #d63b42;
+
   --afsp-dark: #00806a;
   --afsp-light: #d5f5ec;
 
@@ -38,17 +42,35 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Subtle prism background */
+/* Holographic / chrome-style background (movement controlled by JS) */
 body {
   background:
-    radial-gradient(circle at 0% 0%, rgba(0, 178, 139, 0.12), transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(88, 86, 214, 0.10), transparent 55%),
-    radial-gradient(circle at 100% 0%, rgba(255, 149, 0, 0.08), transparent 55%),
-    linear-gradient(135deg, #fdfefe, #f7fafc 40%, #f8fbf8 75%, #ffffff);
+    /* soft pink highlight top-left */
+    radial-gradient(circle at 10% 0%, rgba(255, 170, 214, 0.70), transparent 60%),
+    /* cyan / aqua highlight top-right */
+    radial-gradient(circle at 90% 0%, rgba(144, 220, 255, 0.70), transparent 60%),
+    /* warm glow bottom-left */
+    radial-gradient(circle at 0% 85%, rgba(255, 214, 165, 0.75), transparent 55%),
+    /* purple / blue chrome bottom-right */
+    radial-gradient(circle at 100% 100%, rgba(190, 174, 255, 0.70), transparent 55%),
+    /* subtle chrome sweep through the middle */
+    conic-gradient(
+      from 210deg at 50% 40%,
+      #f9fbff,
+      #f5f1ff,
+      #fdeffd,
+      #f9fbff
+    );
   background-attachment: fixed;
-  background-size: 180% 180%;
-  background-position: 50% 18%;
-  transition: background-position 0.35s ease-out;
+  background-size: 230% 230%;  /* big canvas for fluid motion */
+  background-position: 50% 20%;
+  transition: background-position 0.22s ease-out;
+}
+
+/* Lock scroll while intro is active */
+body.intro-active {
+  overflow: hidden;
+  height: 100vh;
 }
 
 /* Layout helpers */
@@ -126,7 +148,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 40px;
-  margin-top: clamp(40px, 14vh, 80px); /* pushes crests lower */
+  margin-top: clamp(40px, 14vh, 80px);
   margin-bottom: 20px;
 }
 
@@ -223,7 +245,7 @@ body.hero-mounted .hero-main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 11px 22px;
   border-radius: 999px;
   border: 1px solid transparent;
   font-size: 0.95rem;
@@ -238,25 +260,29 @@ body.hero-mounted .hero-main {
   white-space: nowrap;
 }
 
+/* Main CTA: bright coral gradient, very visible */
 .btn.primary {
-  background-color: var(--accent);
+  background-image: linear-gradient(135deg, #ff5a5f, #ff9966);
   color: #ffffff;
-  box-shadow: 0 14px 30px rgba(0, 178, 139, 0.32);
+  box-shadow: 0 14px 30px rgba(255, 90, 95, 0.45);
 }
 
 .btn.primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 20px 40px rgba(0, 178, 139, 0.4);
+  box-shadow: 0 20px 40px rgba(255, 90, 95, 0.6);
 }
 
+/* Ghost button uses soft accent outlines */
 .btn.ghost {
-  background-color: rgba(255, 255, 255, 0.7);
-  color: var(--text-main);
-  border-color: var(--border-subtle);
+  background-color: rgba(255, 255, 255, 0.85);
+  color: var(--accent-dark);
+  border-color: var(--accent-soft);
 }
 
 .btn.ghost:hover {
-  background-color: rgba(238, 242, 241, 0.95);
+  background-color: #ffffff;
+  border-color: var(--accent);
+  color: var(--accent-dark);
 }
 
 .btn.full {
@@ -618,7 +644,11 @@ body.hero-mounted .hero-main {
 #welcome-intro {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.45));
+  background: radial-gradient(
+      circle at 50% 40%,
+      rgba(255, 255, 255, 0.14),
+      rgba(0, 0, 0, 0.45)
+    );
   display: flex;
   justify-content: center;
   align-items: center;
