@@ -42,34 +42,34 @@ html {
   scroll-behavior: smooth;
 }
 
-//* Soft holographic background that matches the palette & is visible near the top */
+/* Soft holographic background that matches the palette & is visible near the top */
 body {
   background:
     /* soft coral glow, upper-left (ties to primary button) */
     radial-gradient(circle at 20% 10%,
-      rgba(255, 150, 155, 0.32),
+      rgba(255, 255, 255, 0.007),
       transparent 60%
     ),
     /* mint/teal glow, upper-right (mental health / hope) */
     radial-gradient(circle at 80% 12%,
-      rgba(160, 225, 210, 0.30),
+      rgba(128, 243, 216, 0.116),
       transparent 60%
     ),
     /* warm neutral, lower-left */
     radial-gradient(circle at 18% 82%,
-      rgba(255, 220, 190, 0.30),
+      rgba(168, 13, 13, 0.356),
       transparent 60%
     ),
     /* soft lavender, lower-right */
     radial-gradient(circle at 82% 88%,
-      rgba(205, 195, 255, 0.28),
+      rgba(1, 54, 226, 0),
       transparent 60%
     ),
     /* very light base so content still pops */
     linear-gradient(135deg, #fdfefe, #faf7fb 45%, #f9fbf8 100%);
   background-attachment: scroll;          /* smoother on phones */
   background-size: 220% 220%;            /* big canvas for fluid movement */
-  background-position: 50% 24%;          /* centered so hero sees the color */
+  background-position: 50% 24%;          /* JS will animate this */
   transition: background-position 0.22s ease-out;
 }
 
@@ -79,22 +79,6 @@ body {
     background-size: 260% 260%;
     background-position: 50% 26%;
   }
-}
-
-
-/* Slight tweak for phones: make blobs a bit larger/softer */
-@media (max-width: 768px) {
-  body {
-    background-size: 260% 260%;
-    background-position: 50% 22%;
-  }
-}
-
-
-/* Lock scroll while intro is active */
-body.intro-active {
-  overflow: hidden;
-  height: 100vh;
 }
 
 /* Layout helpers */
@@ -130,7 +114,7 @@ body.intro-active {
 .hero {
   background: transparent;
   padding: 24px 16px 80px 16px;
-  min-height: 100vh; /* ensures next section is off-screen initially */
+  min-height: 100vh;
   display: block;
 }
 

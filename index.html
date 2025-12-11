@@ -6,11 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="intro-active">
+<body>
   <!-- Ferrari-style welcome intro overlay -->
   <div id="welcome-intro">
     <div class="intro-content">
-      <!-- images live in /public -->
       <img src="public/pike.png" alt="Pi Kappa Alpha crest" class="intro-crest crest-left" />
       <img src="public/pikapp.png" alt="Pi Kappa Phi crest" class="intro-crest crest-right" />
       <h1 class="intro-title">Run for Hope 5K</h1>
@@ -380,7 +379,7 @@
     </div>
   </footer>
 
-    <!-- JS -->
+  <!-- JS -->
   <script>
     // Keep footer year current
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -388,10 +387,19 @@
     document.addEventListener("DOMContentLoaded", () => {
       const intro = document.getElementById("welcome-intro");
       const body = document.body;
+      const hero = document.getElementById("top");
 
-      // ====== LANDO-STYLE BACKGROUND PARALLAX ======
+      // Always start at the top ASAP
+      const forceTop = () => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      };
+      forceTop();
+
+      // ====== BACKGROUND PARALLAX (subtle, fluid) ======
       const baseBgX = 50;
-      const baseBgY = 24;  // slightly lower so hero area has color
+      const baseBgY = 24;  // tuned so hero sees the color
 
       let scrollOffsetY = 0;
       let mouseNormX = 0; // -0.5 to 0.5
@@ -403,10 +411,10 @@
       const lerp = (start, end, k) => start + (end - start) * k;
 
       function updateBackground() {
-        t += 0.004; // slow wobble
+        t += 0.004; // slow time wobble
 
-        const mouseShiftX = mouseNormX * 18;
-        const mouseShiftY = mouseNormY * 12;
+        const mouseShiftX = mouseNormX * 16;
+        const mouseShiftY = mouseNormY * 10;
 
         const wobbleX = Math.sin(t) * 2;
         const wobbleY = Math.cos(t * 1.35) * 2;
@@ -422,21 +430,11 @@
         requestAnimationFrame(updateBackground);
       }
 
-      // Mouse-based parallax (desktop / tablet)
+      // Mouse parallax (desktop)
       window.addEventListener("mousemove", (e) => {
         mouseNormX = e.clientX / window.innerWidth - 0.5;
         mouseNormY = e.clientY / window.innerHeight - 0.5;
       });
-
-      // Helper to aggressively force top (for mobile browser quirks)
-      const forceTop = () => {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      };
-
-      // Make sure we start at top as soon as possible
-      forceTop();
 
       // ====== INTRO SEQUENCE ======
 
@@ -445,21 +443,25 @@
         intro.classList.add("loaded");
       }, 150);
 
-      // Step 2: fade intro OUT + unlock scroll + reset to top
+      // Step 2: fade intro OUT
       setTimeout(() => {
         intro.classList.add("fade-out");
-        body.classList.remove("intro-active");
         forceTop();
-      }, 1850); // ~1.8s Ferrari-style intro
+        hero.scrollIntoView({ behavior: "auto", block: "start" });
+      }, 1850);
 
       // Step 3: reveal hero underneath
       setTimeout(() => {
         body.classList.add("hero-mounted");
         forceTop();
-      }, 1900);
+        hero.scrollIntoView({ behavior: "auto", block: "start" });
+      }, 1950);
 
-      // Safety: one more top-reset a bit later for mobile bars resizing
-      setTimeout(forceTop, 2200);
+      // Safety: one more top-reset a bit later for mobile bar resize
+      setTimeout(() => {
+        forceTop();
+        hero.scrollIntoView({ behavior: "auto", block: "start" });
+      }, 2300);
 
       // ====== SCROLL EFFECTS (crest shrink + BG scroll influence) ======
       const onScrollHero = () => {
@@ -469,14 +471,14 @@
           body.classList.remove("scrolled-hero");
         }
 
-        const maxShift = 18; // percent
+        const maxShift = 18;
         scrollOffsetY = Math.min(window.scrollY / 60, maxShift);
       };
 
       window.addEventListener("scroll", onScrollHero, { passive: true });
       onScrollHero();
 
-      // Kick off the animated background loop
+      // Kick off animated background loop
       updateBackground();
 
       // ====== SCROLL REVEAL FOR SECTIONS ======
@@ -490,7 +492,7 @@
             }
           });
         },
-        { threshold: 0.18 }
+        { threshold: 0.12 }
       );
 
       revealSections.forEach((sec) => observer.observe(sec));
