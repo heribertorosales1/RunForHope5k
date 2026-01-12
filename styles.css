@@ -57,12 +57,12 @@ body {
     ),
     /* warm neutral, lower-left */
     radial-gradient(circle at 18% 82%,
-      rgba(39, 131, 250, 0.356),
+      rgba(159, 201, 255, 0.356),
       transparent 60%
     ),
     /* soft lavender, lower-right */
     radial-gradient(circle at 82% 88%,
-      rgba(1, 54, 226, 0),
+      rgba(188, 204, 255, 0),
       transparent 60%
     ),
     /* very light base so content still pops */
