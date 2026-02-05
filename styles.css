@@ -162,6 +162,7 @@ body {
 }
 
 .btn.ghost {
+  margin: 0;
   border: 1px solid var(--text-bright);
   color: var(--text-bright);
 }
