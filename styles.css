@@ -135,8 +135,11 @@ body {
 /* --- BUTTONS --- */
 .hero-buttons {
   display: flex;
+  flex-direction: row; /* Horizontal on desktop */
+  justify-content: center;
   gap: 15px;
-  margin-top: 20px;
+  margin-top: 2rem;
+  width: 100%;
 }
 
 .btn {
@@ -148,8 +151,21 @@ body {
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-block;
+  text-align: center; /* Ensures text is centered inside the button */
 }
+/* --- MOBILE SPECIFIC FIX --- */
+@media (max-width: 600px) {
+  .hero-buttons {
+    flex-direction: column; /* Stacks buttons vertically */
+    align-items: center;    /* Centers the stack */
+    padding: 0 20px;        /* Prevents buttons from touching screen edges */
+  }
 
+  .btn {
+    width: 100%;            /* Makes buttons equal width on mobile */
+    max-width: 320px;       /* Keeps them from looking like long sausages */
+  }
+}
 .btn.primary {
   background-color: var(--accent-neon);
   color: #000;
