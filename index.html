@@ -2,35 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Run for Hope 5K</title>
+  <title>Run for Hope 5K | UA Mental Health Run</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      /* Core Palette: High-Contrast Dark Velocity */
+      --bg-dark: #050505;
+      --bg-card: rgba(18, 18, 18, 0.98);
+      --text-bright: #ffffff;
+      --text-muted: #a0a0a0;
+      --accent: #00ff88; /* Electric Lime */
+      --accent-dark: #00cc6d;
+      --radius: 12px;
+      --max-width: 1100px;
+    }
+
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-dark);
+      color: var(--text-bright);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* --- Ferrari-Style Intro Sequence --- */
+    #welcome-intro {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .intro-content {
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 1.2s ease;
+    }
+
+    #welcome-intro.loaded .intro-content { opacity: 1; transform: scale(1); }
+    #welcome-intro.fade-out { opacity: 0; pointer-events: none; }
+
+    .intro-crest { height: 100px; margin: 0 15px; }
+    .intro-title { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; margin-top: 20px; text-transform: uppercase; }
+
+    /* --- Navigation --- */
+    .nav {
+      position: fixed;
+      top: 0; width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(15px);
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logo { font-weight: 900; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; font-size: 0.85rem; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: var(--text-bright); text-decoration: none; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; opacity: 0.6; transition: 0.3s; }
+    .nav-links a:hover { opacity: 1; color: var(--accent); }
+
+    /* --- Hero Section --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+
+    .hero-logos { display: flex; gap: 2.5rem; margin-bottom: 2rem; }
+    .crest { height: 90px; width: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); transition: 0.4s ease; }
+    .crest:hover { transform: translateY(-5px) scale(1.05); }
+
+    .hero-kicker { font-weight: 800; color: var(--accent); letter-spacing: 0.4em; text-transform: uppercase; font-size: 0.7rem; margin-bottom: 0.5rem; }
+    .hero h1 { font-size: clamp(2.5rem, 10vw, 6rem); font-weight: 900; line-height: 0.9; margin: 0.5rem 0; text-transform: uppercase; letter-spacing: -0.04em; }
+    .hero-subtitle { color: var(--text-muted); max-width: 550px; margin: 1.5rem auto; font-size: 1.1rem; }
+
+    .btn { padding: 1rem 2.5rem; border-radius: 4px; text-transform: uppercase; font-weight: 900; font-size: 0.8rem; text-decoration: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); letter-spacing: 1px; display: inline-block; cursor: pointer; text-align: center; }
+    .btn.primary { background: var(--accent); color: #000; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+    .btn.primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); }
+    .btn.ghost { border: 1px solid rgba(255, 255, 255, 0.4); color: var(--text-bright); }
+    .btn.ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 255, 136, 0.05); }
+
+    /* --- Content Sections --- */
+    .section { padding: 80px 20px; }
+    .container { max-width: var(--max-width); margin: 0 auto; }
+    .container.narrow { max-width: 850px; }
+
+    .glass-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 4rem;
+      backdrop-filter: blur(15px);
+    }
+
+    .section-title { font-size: 2.2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--accent); }
+    .section-lead { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+    .grid { display: grid; gap: 3rem; grid-template-columns: 1fr 1fr; }
+
+    /* --- Map and Lists --- */
+    .route-image-wrapper { margin-top: 3rem; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .route-image { width: 100%; display: block; filter: contrast(1.1) brightness(0.95); transition: 0.5s ease; }
+
+    .bullets { list-style: none; padding: 0; margin: 1.5rem 0; }
+    .bullets li { margin-bottom: 0.8rem; color: var(--text-muted); display: flex; align-items: flex-start; }
+    .bullets li::before { content: "•"; color: var(--accent); margin-right: 12px; font-weight: bold; }
+
+    .faq-item { margin-bottom: 2rem; }
+    .faq-item h3 { color: var(--accent); font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+    .timeline-item { margin-bottom: 1.5rem; }
+    .timeline-item h3 { color: var(--accent); margin: 0; }
+
+    /* --- Fade-In Animation --- */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 3rem; }
+      .glass-card { padding: 2rem; }
+      .nav { padding: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Ferrari-style welcome intro overlay -->
+
   <div id="welcome-intro">
     <div class="intro-content">
-      <img src="public/pike.png" alt="Pi Kappa Alpha crest" class="intro-crest crest-left" />
-      <img src="public/pikapp.png" alt="Pi Kappa Phi crest" class="intro-crest crest-right" />
-      <h1 class="intro-title">Run for Hope 5K</h1>
+      <img src="public/pike.png" class="intro-crest" alt="Pike">
+      <img src="public/pikapp.png" class="intro-crest" alt="Pi Kapp">
+      <div class="intro-title">Run for Hope 5K</div>
     </div>
   </div>
 
-  <!-- HERO -->
-  <header class="hero" id="top">
-    <nav class="nav">
-      <div class="logo">Run for Hope 5K</div>
-      <div class="nav-links">
-        <a href="#about">About</a>
-        <a href="#registration">Register</a>
-        <a href="#route">Route</a>
-        <a href="#sponsors">Sponsors</a>
-        <a href="#active-minds">Active Minds</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </nav>
+  <nav class="nav">
+    <div class="logo">Run for Hope 5K</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#registration">Register</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#route">Route</a>
+      <a href="#sponsors">Sponsors</a>
+      <a href="#active-minds">Active Minds</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
 
+  <header class="hero" id="top">
     <div class="hero-logos">
       <img src="public/pike.png" alt="Pi Kappa Alpha crest" class="crest" />
       <img src="public/pikapp.png" alt="Pi Kappa Phi crest" class="crest" />
@@ -38,464 +173,187 @@
 
     <div class="hero-content">
       <div class="hero-kicker">Pi Kappa Alpha × Pi Kappa Phi</div>
-
       <div class="hero-main">
         <h1>Run for Hope 5K</h1>
-        <p class="hero-subtitle">
-          Benefitting Active Minds, the student mental health nonprofit.
-        </p>
-        <p class="hero-meta">
-          Tuscaloosa, Alabama · February 28, 2026
-        </p>
-
+        <p class="hero-subtitle">Benefitting Active Minds, the student mental health nonprofit.</p>
+        <p style="font-weight: 800; letter-spacing: 1px; color: var(--text-bright);">TUSCALOOSA, AL • MARCH 1, 2026</p>
         <div class="hero-buttons">
-          <a
-            href="https://buy.stripe.com/28EcN71NNg2b9oWc8xbfO01"
-            class="btn primary"
-            target="_blank"
-            rel="noopener"
-          >
-            Register &amp; Pay – $25
-          </a>
-
-          <a href="#tax-gift" class="btn ghost">
-            Donate to Active Minds
-          </a>
+          <a href="https://buy.stripe.com/9B6aEZcsr03d58G1tTbfO05" class="btn primary" target="_blank" rel="noopener">Register & Pay – $25</a>
+          <a href="#tax-gift" class="btn ghost" style="margin-left: 15px;">Donate to Active Minds</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ABOUT -->
   <section class="section reveal" id="about">
-    <div class="container narrow">
+    <div class="container narrow glass-card">
       <h2 class="section-title">A Run for Awareness, Hope, and Community</h2>
-      <p class="section-lead">
-        The brothers of <strong>Pi Kappa Alpha</strong> and
-        <strong>Pi Kappa Phi</strong> invite you to join the <strong>Run for Hope 5K</strong>, a
-        philanthropy event dedicated to mental health and suicide prevention.
-      </p>
-      <p>
-        Funds raised will support <strong>Active Minds’</strong> student-led mental health
-        programs, campus initiatives, educational outreach, and resources for students and young
-        adults. Whether you run, walk, sponsor, or donate, you’re helping bring hope to our
-        community.
-      </p>
+      <p class="section-lead">The brothers of Pi Kappa Alpha and Pi Kappa Phi invite you to join the Run for Hope 5K, a philanthropy event dedicated to mental health and suicide prevention.</p>
+      <p>Funds raised will support Active Minds’ student-led mental health programs, campus initiatives, educational outreach, and resources for students and young adults. Whether you run, walk, sponsor, or donate, you’re helping bring hope to our community.</p>
     </div>
   </section>
 
-  <!-- REGISTRATION -->
   <section class="section reveal" id="registration">
-    <div class="container">
-      <div class="grid-2">
-        <div class="card">
-          <h2 class="section-title">Register for the 5K</h2>
-          <p class="section-lead">
-            One simple step: enter your info, pick your T-shirt size, and pay the $25 registration
-            fee through secure checkout.
-          </p>
+    <div class="container narrow glass-card">
+      <h2 class="section-title">Register for the 5K</h2>
+      <div class="grid">
+        <div>
+          <p class="section-lead">One simple step: enter your info, pick your T-shirt size, and pay the $25 registration fee through secure checkout.</p>
           <ul class="bullets">
             <li>Official event T-shirt</li>
             <li>Race bib</li>
             <li>Post-race refreshments</li>
             <li>Entry into raffle and awards</li>
           </ul>
-          <div class="price">
-            <span class="price-amount">$25</span>
-            <span> per participant</span>
-          </div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent);">$25 per participant</div>
         </div>
-
-        <div class="card card-side">
-          <h3 class="section-title small-heading">Register &amp; Pay in One Step</h3>
-          <p>
-            Our Stripe checkout collects your name, email, T-shirt size, and payment all in a
-            single, secure flow.
-          </p>
-          <p class="small-note">
-            Checkout accepts all major credit and debit cards, Apple Pay, and Google Pay.
-          </p>
-
-          <a
-            href="https://buy.stripe.com/28EcN71NNg2b9oWc8xbfO01"
-            class="btn primary full"
-            target="_blank"
-            rel="noopener"
-          >
-            Register &amp; Pay – $25
-          </a>
-
-          <p class="small-note" style="margin-top: 14px;">
-            If you’re unable to register via Stripe and need an alternate payment option, please
-            email <a href="mailto:alabamapike@gmail.com">alabamapike@gmail.com</a>.
-          </p>
+        <div style="background: rgba(255,255,255,0.03); padding: 2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+          <h3 style="margin-top: 0;">Register & Pay in One Step</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Our Stripe checkout collects your name, email, T-shirt size, and payment all in a single, secure flow.</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Accepts all major credit/debit cards, Apple Pay, and Google Pay.</p>
+          <a href="https://buy.stripe.com/9B6aEZcsr03d58G1tTbfO05" class="btn primary" style="width: 100%;" target="_blank" rel="noopener">Register & Pay – $25</a>
+          <p style="font-size: 0.7rem; margin-top: 1rem; color: var(--text-muted);">Need alternate payment? Email <a href="mailto:alabamapike@gmail.com" style="color:var(--accent);">alabamapike@gmail.com</a></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SCHEDULE -->
   <section class="section reveal" id="schedule">
-    <div class="container narrow">
+    <div class="container narrow glass-card">
       <h2 class="section-title">Event Day Schedule</h2>
-      <p class="section-lead">
-        The Run for Hope 5K will be held on <strong>February 28, 2026</strong> and will start and
-        finish at the <strong>University of Alabama Student Recreation Center</strong>.
-      </p>
+      <p class="section-lead">Held on March 1, 2026 at the University of Alabama Student Recreation Center.</p>
       <div class="timeline">
-        <div class="timeline-item">
-          <h3>10:00 AM</h3>
-          <p>Check-in and T-shirt pickup open at the Student Recreation Center.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>10:45 AM</h3>
-          <p>Welcome remarks and a mental health message.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>11:00 AM</h3>
-          <p>Run for Hope 5K begins.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>12:00 PM</h3>
-          <p>Awards, raffle, and closing remarks.</p>
-        </div>
+        <div class="timeline-item"><h3>10:00 AM</h3><p>Check-in and T-shirt pickup open.</p></div>
+        <div class="timeline-item"><h3>10:45 AM</h3><p>Welcome remarks and a mental health message.</p></div>
+        <div class="timeline-item"><h3>11:00 AM</h3><p>Run for Hope 5K begins.</p></div>
+        <div class="timeline-item"><h3>12:00 PM</h3><p>Awards, raffle, and closing remarks.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ROUTE -->
   <section class="section reveal" id="route">
-    <div class="container narrow">
+    <div class="container narrow glass-card">
       <h2 class="section-title">Race Route</h2>
-      <p class="section-lead">
-        The Run for Hope 5K follows the University of Alabama’s official 5K loop and
-        <strong>starts and finishes at the UA Student Recreation Center.</strong>
-      </p>
-      <p>
-        This 3.1-mile course loops through campus with clearly marked directions and volunteers
-        stationed throughout the route. Walkers, runners, and strollers are welcome as long as the
-        course remains safe and accessible for everyone.
-      </p>
-
+      <p class="section-lead">The course follows the University of Alabama’s official 5K loop and starts and finishes at the UA Student Recreation Center.</p>
+      <p>This 3.1-mile course loops through campus with clearly marked directions and volunteers stationed throughout the route. Walkers, runners, and strollers are welcome.</p>
       <div class="route-image-wrapper">
         <img src="public/route.png" alt="UA Run for Hope 5K race route" class="route-image" />
       </div>
     </div>
   </section>
 
-  <!-- SPONSORS -->
   <section class="section reveal" id="sponsors">
-    <div class="container">
-      <div class="card">
-        <h2 class="section-title center">Sponsorship Opportunities</h2>
-        <p class="section-lead center">
-          Partner with us to support student mental health and gain visibility in the Tuscaloosa
-          community.
-        </p>
-
-        <div class="grid-3 cards-equal">
-          <div class="card sponsor-card">
-            <h3>Gold Sponsor</h3>
-            <div class="price">
-              <span class="price-amount">$500</span>
-            </div>
-            <ul class="bullets">
-              <li>Logo on event T-shirts</li>
-              <li>Logo on event banner</li>
-              <li>Featured in social posts</li>
-            </ul>
-          </div>
-
-          <div class="card sponsor-card">
-            <h3>Silver Sponsor</h3>
-            <div class="price">
-              <span class="price-amount">$250</span>
-            </div>
-            <ul class="bullets">
-              <li>Logo on event banner</li>
-              <li>Listed on website</li>
-            </ul>
-          </div>
-
-          <div class="card sponsor-card">
-            <h3>Bronze Sponsor</h3>
-            <div class="price">
-              <span class="price-amount">$100</span>
-            </div>
-            <ul class="bullets">
-              <li>Name listed on website</li>
-            </ul>
-          </div>
+    <div class="container narrow glass-card">
+      <h2 class="section-title">Sponsorship Opportunities</h2>
+      <p class="section-lead">Partner with us to support student mental health and gain visibility in the Tuscaloosa community.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+        <div style="border: 1px solid var(--accent); padding: 1.5rem; border-radius: 8px; text-align: center;">
+          <h3 style="color: var(--accent);">Gold Sponsor</h3>
+          <p style="font-weight: 800;">$500</p>
+          <ul style="font-size: 0.8rem; text-align: left; padding-left: 1rem; color: var(--text-muted);">
+            <li>Logo on event T-shirts</li>
+            <li>Logo on event banner</li>
+            <li>Featured in social posts</li>
+          </ul>
         </div>
-
-        <div style="text-align:center; margin-top:20px;">
-          <a
-            href="mailto:alabamapike@gmail.com?subject=Run%20for%20Hope%205K%20Sponsorship"
-            class="btn primary">
-            Become a Sponsor
-          </a>
+        <div style="border: 1px solid var(--accent); padding: 1.5rem; border-radius: 8px; text-align: center;">
+          <h3 style="color: var(--accent);">Silver Sponsor</h3>
+          <p style="font-weight: 800;">$250</p>
+          <ul style="font-size: 0.8rem; text-align: left; padding-left: 1rem; color: var(--text-muted);">
+            <li>Logo on event banner</li>
+            <li>Listed on website</li>
+          </ul>
         </div>
+        <div style="border: 1px solid var(--accent); padding: 1.5rem; border-radius: 8px; text-align: center;">
+          <h3 style="color: var(--accent);">Bronze Sponsor</h3>
+          <p style="font-weight: 800;">$100</p>
+          <ul style="font-size: 0.8rem; text-align: left; padding-left: 1rem; color: var(--text-muted);">
+            <li>Name listed on website</li>
+          </ul>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="mailto:alabamapike@gmail.com?subject=Run%20for%20Hope%205K%20Sponsorship" class="btn ghost">Become a Sponsor</a>
       </div>
     </div>
   </section>
 
-  <!-- ACTIVE MINDS -->
   <section class="section reveal" id="active-minds">
-    <div class="container narrow">
-      <div class="tag-pill">Benefitting Active Minds</div>
+    <div class="container narrow glass-card">
+      <div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 99px; background: rgba(0, 255, 136, 0.1); color: var(--accent); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem;">
+        <span style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%;"></span>
+        Benefitting Active Minds
+      </div>
       <h2 class="section-title">About Active Minds</h2>
-      <p class="section-lead">
-        Active Minds is the leading nonprofit empowering students and young adults to speak openly
-        about mental health, educate their peers, and encourage help-seeking.
-      </p>
-      <p>
-        Through a nationwide network of campus chapters, awareness campaigns, and youth leadership
-        programs, Active Minds is transforming how mental health is talked about, valued, and
-        supported in schools and communities across the country.
-      </p>
-      <p>
-        By participating in the Run for Hope 5K, you’re helping expand conversations around mental
-        health, reduce stigma, and create more supportive environments for students at the
-        University of Alabama and beyond.
-      </p>
-
-      <div style="margin-top:18px;">
-        <div class="afsp-badge">
-          <span class="afsp-dot"></span>
-          Active Minds – Student-Led Mental Health Advocacy
-        </div>
-      </div>
-
-      <div style="text-align:center; margin-top:22px;">
-        <a
-          href="https://www.activeminds.org/"
-          class="btn ghost"
-          target="_blank"
-          rel="noopener"
-        >
-          Learn more about Active Minds
-        </a>
+      <p class="section-lead">Active Minds is the leading nonprofit empowering students and young adults to speak openly about mental health, educate their peers, and encourage help-seeking.</p>
+      <p>Through a nationwide network of campus chapters, awareness campaigns, and youth leadership programs, Active Minds is transforming how mental health is talked about, valued, and supported in schools and communities across the country.</p>
+      <p>By participating in the Run for Hope 5K, you’re helping expand conversations around mental health, reduce stigma, and create more supportive environments for students at the University of Alabama and beyond.</p>
+      <div style="margin-top: 2rem;">
+        <a href="https://www.activeminds.org/" class="btn ghost" target="_blank" rel="noopener">Learn more about Active Minds</a>
       </div>
     </div>
   </section>
 
-  <!-- TAX-DEDUCTIBLE GIFT -->
   <section class="section reveal" id="tax-gift">
-    <div class="container narrow">
+    <div class="container narrow glass-card" style="border-color: rgba(0, 255, 136, 0.2);">
       <h2 class="section-title">Make a Tax-Deductible Gift</h2>
-      <p class="section-lead">
-        Can’t make the run or want to do more? You can still support by making a tax-deductible
-        donation directly to Active Minds.
-      </p>
-      <p>
-        Registration fees collected by our chapters help cover event costs and our total
-        contribution to Active Minds, but they are <strong>not tax-deductible</strong>. If you
-        would like a <strong>tax-deductible receipt</strong>, please make a separate gift through
-        our official Active Minds fundraising page below. These donations go straight to Active
-        Minds and support student-led mental health programs and outreach nationwide.
-      </p>
-
-      <div style="text-align:center; margin-top:22px;">
-        <a
-          href="https://support.activeminds.org/fundraiser/6863275"
-          class="btn primary"
-          target="_blank"
-          rel="noopener"
-        >
-          Donate Directly to Active Minds
-        </a>
+      <p class="section-lead">Can’t make the run or want to do more? You can still support by making a tax-deductible donation directly to Active Minds.</p>
+      <p style="font-size: 0.95rem; color: var(--text-muted);">Registration fees help cover event costs and our total contribution, but they are <strong>not tax-deductible</strong>. For a <strong>tax-deductible receipt</strong>, please make a separate gift through our official fundraising page below. These donations go straight to Active Minds and support programs nationwide.</p>
+      <div style="text-align: center; margin-top: 2.5rem;">
+        <a href="https://support.activeminds.org/fundraiser/6863275" class="btn primary" target="_blank" rel="noopener">Donate Directly to Active Minds</a>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1.5rem; font-style: italic;">Donations through Active Minds do not count as 5K registration, but directly support the mission and may qualify as tax-deductible.</p>
       </div>
-      <p class="small-note" style="margin-top:14px;">
-        Donations made through Active Minds do not count as 5K registration, but they directly
-        support the organization’s mission and may qualify as tax-deductible.
-      </p>
     </div>
   </section>
 
-  <!-- FAQ -->
   <section class="section reveal" id="faq">
-    <div class="container narrow">
+    <div class="container narrow glass-card">
       <h2 class="section-title">FAQ</h2>
       <div class="faq-list">
-        <div class="faq-item">
-          <h3>Who can participate?</h3>
-          <p>
-            Students, alumni, parents, staff, and community members are all welcome to join the Run
-            for Hope 5K.
-          </p>
-        </div>
-        <div class="faq-item">
-          <h3>Can I walk instead of run?</h3>
-          <p>
-            Yes. Walkers are absolutely welcome. This event is about showing up and supporting
-            mental health.
-          </p>
-        </div>
-        <div class="faq-item">
-          <h3>Do I receive a T-shirt?</h3>
-          <p>
-            Yes, every registered participant who completes the $25 Stripe checkout will receive an
-            event T-shirt while supplies last.
-          </p>
-        </div>
-        <div class="faq-item">
-          <h3>Where is the start and finish?</h3>
-          <p>
-            The 5K starts and finishes at the University of Alabama Student Recreation Center.
-          </p>
-        </div>
-        <div class="faq-item">
-          <h3>What happens if it rains?</h3>
-          <p>
-            The event will take place rain or shine, unless severe weather makes conditions unsafe.
-            Any updates will be emailed to registered participants.
-          </p>
-        </div>
+        <div class="faq-item"><h3>Who can participate?</h3><p>Students, alumni, parents, staff, and community members are all welcome.</p></div>
+        <div class="faq-item"><h3>Can I walk instead of run?</h3><p>Yes. Walkers are absolutely welcome. This event is about showing up and supporting mental health.</p></div>
+        <div class="faq-item"><h3>Do I receive a T-shirt?</h3><p>Yes, every registered participant via Stripe will receive an event T-shirt while supplies last.</p></div>
+        <div class="faq-item"><h3>Where is the start and finish?</h3><p>The 5K starts and finishes at the UA Student Recreation Center.</p></div>
+        <div class="faq-item"><h3>What happens if it rains?</h3><p>Rain or shine, unless severe weather makes conditions unsafe. Updates will be emailed.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section class="section reveal" id="contact">
-    <div class="container narrow">
-      <h2 class="section-title center">Contact</h2>
-      <p class="section-lead center">
-        Questions about registration, sponsorships, or donations? We’re here to help.
-      </p>
-      <p class="center">
-        Email us at
-        <a href="mailto:alabamapike@gmail.com">alabamapike@gmail.com</a>.
-      </p>
-      <p class="small-note center" style="margin-top:16px;">
-        Hosted by Pi Kappa Alpha – Gamma Alpha Chapter &amp; Pi Kappa Phi – Omicron Chapter.
-      </p>
+    <div class="container narrow glass-card" style="text-align: center;">
+      <h2 class="section-title">Contact</h2>
+      <p class="section-lead">Questions about registration, sponsorships, or donations?</p>
+      <p>Email us at <a href="mailto:alabamapike@gmail.com" style="color: var(--accent); font-weight: 700;">alabamapike@gmail.com</a></p>
+      <p style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-muted);">Hosted by Pi Kappa Alpha – Gamma Alpha Chapter & Pi Kappa Phi – Omicron Chapter.</p>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container narrow center">
-      <p>© <span id="year"></span> Run for Hope 5K · All rights reserved.</p>
-    </div>
+  <footer style="text-align: center; padding: 4rem 2rem; border-top: 1px solid #111; color: var(--text-muted); font-size: 0.8rem;">
+    <p>© <span id="year"></span> Run for Hope 5K · Tuscaloosa, Alabama</p>
   </footer>
 
-  <!-- JS -->
   <script>
-    // Keep footer year current
     document.getElementById("year").textContent = new Date().getFullYear();
 
     document.addEventListener("DOMContentLoaded", () => {
       const intro = document.getElementById("welcome-intro");
-      const body = document.body;
-      const hero = document.getElementById("top");
+      
+      // Step 1: Ferrari Animation - Show Content
+      setTimeout(() => intro.classList.add("loaded"), 300);
+      
+      // Step 2: Ferrari Animation - Fade Out
+      setTimeout(() => intro.classList.add("fade-out"), 2200);
 
-      // Always start at the top ASAP
-      const forceTop = () => {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      };
-      forceTop();
+      // Step 3: Scroll Reveal Animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+          }
+        });
+      }, { threshold: 0.1 });
 
-      // ====== BACKGROUND PARALLAX (subtle, fluid) ======
-      const baseBgX = 50;
-      const baseBgY = 24;  // tuned so hero sees the color
-
-      let scrollOffsetY = 0;
-      let mouseNormX = 0; // -0.5 to 0.5
-      let mouseNormY = 0;
-      let currentX = baseBgX;
-      let currentY = baseBgY;
-      let t = 0;
-
-      const lerp = (start, end, k) => start + (end - start) * k;
-
-      function updateBackground() {
-        t += 0.004; // slow time wobble
-
-        const mouseShiftX = mouseNormX * 16;
-        const mouseShiftY = mouseNormY * 10;
-
-        const wobbleX = Math.sin(t) * 2;
-        const wobbleY = Math.cos(t * 1.35) * 2;
-
-        const targetX = baseBgX + mouseShiftX + wobbleX;
-        const targetY = baseBgY + scrollOffsetY + mouseShiftY + wobbleY;
-
-        currentX = lerp(currentX, targetX, 0.12);
-        currentY = lerp(currentY, targetY, 0.12);
-
-        body.style.backgroundPosition = `${currentX}% ${currentY}%`;
-
-        requestAnimationFrame(updateBackground);
-      }
-
-      // Mouse parallax (desktop)
-      window.addEventListener("mousemove", (e) => {
-        mouseNormX = e.clientX / window.innerWidth - 0.5;
-        mouseNormY = e.clientY / window.innerHeight - 0.5;
-      });
-
-      // ====== INTRO SEQUENCE ======
-
-      // Step 1: fade intro content IN
-      setTimeout(() => {
-        intro.classList.add("loaded");
-      }, 150);
-
-      // Step 2: fade intro OUT
-      setTimeout(() => {
-        intro.classList.add("fade-out");
-        forceTop();
-        hero.scrollIntoView({ behavior: "auto", block: "start" });
-      }, 1850);
-
-      // Step 3: reveal hero underneath
-      setTimeout(() => {
-        body.classList.add("hero-mounted");
-        forceTop();
-        hero.scrollIntoView({ behavior: "auto", block: "start" });
-      }, 1950);
-
-      // Safety: one more top-reset a bit later for mobile bar resize
-      setTimeout(() => {
-        forceTop();
-        hero.scrollIntoView({ behavior: "auto", block: "start" });
-      }, 2300);
-
-      // ====== SCROLL EFFECTS (crest shrink + BG scroll influence) ======
-      const onScrollHero = () => {
-        if (window.scrollY > 40) {
-          body.classList.add("scrolled-hero");
-        } else {
-          body.classList.remove("scrolled-hero");
-        }
-
-        const maxShift = 18;
-        scrollOffsetY = Math.min(window.scrollY / 60, maxShift);
-      };
-
-      window.addEventListener("scroll", onScrollHero, { passive: true });
-      onScrollHero();
-
-      // Kick off animated background loop
-      updateBackground();
-
-      // ====== SCROLL REVEAL FOR SECTIONS ======
-      const revealSections = document.querySelectorAll(".section.reveal");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in-view");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12 }
-      );
-
-      revealSections.forEach((sec) => observer.observe(sec));
+      document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
     });
   </script>
 </body>
