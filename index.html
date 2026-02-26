@@ -97,6 +97,45 @@
     .btn.ghost { border: 1px solid rgba(255, 255, 255, 0.4); color: var(--text-bright); }
     .btn.ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 255, 136, 0.05); }
 
+    /* --- COUNTDOWN TIMER --- */
+    .countdown-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .countdown-item {
+      background: var(--bg-card);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      border-radius: var(--radius);
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 90px;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .countdown-value {
+      display: block;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      font-family: monospace; 
+    }
+
+    .countdown-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-top: 5px;
+      display: block;
+      font-weight: 800;
+    }
+
     /* --- Content Sections --- */
     .section { padding: 80px 20px; }
     .container { max-width: var(--max-width); margin: 0 auto; }
@@ -139,6 +178,13 @@
       .glass-card { padding: 2rem; }
       .nav { padding: 1.5rem; }
     }
+    
+    @media (max-width: 600px) { 
+      .countdown-container { gap: 8px; } 
+      .countdown-item { padding: 10px 15px; min-width: 75px; } 
+      .countdown-value { font-size: 1.8rem; } 
+      .countdown-label { font-size: 0.65rem; } 
+    }
   </style>
 </head>
 <body>
@@ -177,6 +223,14 @@
         <h1>Run for Hope 5K</h1>
         <p class="hero-subtitle">Benefitting Active Minds, the student mental health nonprofit.</p>
         <p style="font-weight: 800; letter-spacing: 1px; color: var(--text-bright);">TUSCALOOSA, AL • MARCH 1, 2026</p>
+        
+        <div class="countdown-container" id="countdown">
+          <div class="countdown-item"><span id="days" class="countdown-value">00</span><span class="countdown-label">Days</span></div>
+          <div class="countdown-item"><span id="hours" class="countdown-value">00</span><span class="countdown-label">Hours</span></div>
+          <div class="countdown-item"><span id="minutes" class="countdown-value">00</span><span class="countdown-label">Minutes</span></div>
+          <div class="countdown-item"><span id="seconds" class="countdown-value">00</span><span class="countdown-label">Seconds</span></div>
+        </div>
+
         <div class="hero-buttons">
           <a href="https://buy.stripe.com/9B67sN643eY7gRogoNbfO06" class="btn primary" target="_blank" rel="noopener">Register & Pay – $25</a>
           <a href="#tax-gift" class="btn ghost" style="text-align: center;">Donate to Active Minds</a>
@@ -354,6 +408,33 @@
       }, { threshold: 0.1 });
 
       document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+      // Step 4: Live Countdown Timer Logic
+      const countDownDate = new Date("March 1, 2026 10:00:00").getTime();
+      
+      const timerInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+
+        // If countdown finishes, show a message
+        if (distance < 0) {
+          clearInterval(timerInterval);
+          document.getElementById("countdown").innerHTML = "<div style='color: var(--accent); font-size: 1.5rem; font-weight: 900; text-transform: uppercase;'>The Race Has Started!</div>";
+          return;
+        }
+
+        // Calculate time
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Update DOM elements with leading zeros
+        document.getElementById("days").textContent = days.toString().padStart(2, '0');
+        document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+        document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+        document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+      }, 1000);
     });
   </script>
 </body>
